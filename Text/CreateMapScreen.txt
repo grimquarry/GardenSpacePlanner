@@ -1,0 +1,5 @@
+Simply Enter the Length and Width of your garden below, then click
+the Create button.  This will create a grid you can drop vegetable
+tiles in the left column to plan where you Plants will go.  Don't
+forget to give your garden a name and enter a year so you can look
+back at previous years.  It's that simple!

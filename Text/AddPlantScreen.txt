@@ -1,0 +1,6 @@
+Need to add another plant to the database?  You can do that here.
+Simply fill in the data fields below and click the "Add" button. Plant
+names should be general (like "Tomato"), and variety should be more
+specific (like "Sun Gold").  Plant spacing is done in inches, so
+multiply 12 for any plants that are spaced by feet.  Rows are measured
+by the foot and can only be whole numbers (no decimals).

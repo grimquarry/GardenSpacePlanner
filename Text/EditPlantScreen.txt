@@ -1,0 +1,4 @@
+You can edit existing plants by selecting a plant from the list
+in the left column.  Once a plant is selected its information
+will show up in the boxes below.  Edit the content of those
+boxes as you see fit and click the EDIT PLANT Button.

@@ -1,0 +1,19 @@
+Welcome to the Garden Space Planner.  To get started, click one of
+the above buttons.  For quick reference, here's what you can
+expect from each selection:
+
+SELECT MAP: If you have existing maps, click this button to get a list
+of them and access the one you want.
+
+CREATE MAP:  If you have no maps or want to create a new one, click
+this button to do so.  Once complete, you'll be able to  select and
+add plant tiles to your map from the plant display column to the left.
+
+ADD PLANT: The Garden Space Planner comes with a database of
+many plants, but does not contain all plants.  Click this button to
+add a plant to your garden database.  Your new plant will then be
+displayed as a tile in the plant display column to the left, where you
+can then select and drop it into a custom garden map.
+
+EDIT PLANT: Change colors, text ad other information for an existing
+plant in the database.
