@@ -6,7 +6,7 @@
 			It allows users to add new plants and edit existing plants as needed.
 
     @author Jeremiah Kellogg
-    @version 1.0 12/08/19
+    @version 2.0.0 12/26/19
 */
 
 #include <stdlib.h>
@@ -19,6 +19,7 @@
 #include "Classes/ContentToDisplay.h"
 #include "Classes/LeftColumnContent.h"
 #include "Classes/MapDisplay.h"
+#include "Classes/SelectMap.h"
 
 int main()
 {
@@ -90,16 +91,16 @@ int main()
 	WelcomeScreen.AddText("Text/WelcomeScreen.txt");
 	WelcomeScreen.MakeActive();
 
-	Content SelectMapScreen;
+	SelectMap SelectMapScreen;
 	SelectMapScreen.SetView(contentView);
 	SelectMapScreen.SetMapList();
 	SelectMapScreen.AddScrollArea();
 	SelectMapScreen.AddScrollBar();
 	SelectMapScreen.SetMapContainerVector();
 
-	Content CreateMapScreen;
+	CreateMap CreateMapScreen;
 	CreateMapScreen.AddText("Text/CreateMapScreen.txt");
-	CreateMapScreen.SetView(contentView);
+	//CreateMapScreen.SetView(contentView);
 	CreateMapScreen.AddInputArea(mainContent.GetSize().x - 20.f, mainContent.GetSize().y * .6f, 10.f, mainContent.GetSize().y * .3f);
 	CreateMapScreen.AddInputBoxes("Name", {70.f, mainContent.GetSize().y * .32f + 20.f},
 	"Year", {70.f, mainContent.GetSize().y * .32f + 90.f},
@@ -107,7 +108,7 @@ int main()
 	"Width/foot", {70.f, mainContent.GetSize().y * .32f + 230.f});
 	CreateMapScreen.AddInputButton("CREATE MAP", mainWindow, mainContent.GetSize(), .4f, 1.96f);
 
-	Content AddPlantScreen;
+	AddPlant AddPlantScreen;
 	AddPlantScreen.AddText("Text/AddPlantScreen.txt");
 	AddPlantScreen.AddInputArea(mainContent.GetSize().x - 20.f, mainContent.GetSize().y * .6f, 10.f, mainContent.GetSize().y * .35f - 10.f);
 	AddPlantScreen.AddInputBoxes("Plant Name", {70.f, mainContent.GetSize().y * .4f + 20.f},
@@ -116,7 +117,7 @@ int main()
 	"Row Spacing/foot", {70.f, mainContent.GetSize().y * .4f + 230.f});
 	AddPlantScreen.AddInputButton("ADD PLANT", mainWindow, mainContent.GetSize(), .4f, 2.11f);
 
-	Content EditPlantScreen;
+	EditPlant EditPlantScreen;
 	EditPlantScreen.AddText("Text/EditPlantScreen.txt");
 	EditPlantScreen.AddInputArea(mainContent.GetSize().x - 20.f, mainContent.GetSize().y * .6f, 10.f, mainContent.GetSize().y * .3f - 10.f);
 	EditPlantScreen.AddInputBoxes("Plant Name", {70.f, mainContent.GetSize().y * .32f + 20.f},
@@ -275,15 +276,20 @@ int main()
 					SelectMapScreen.ChangeColor(sf::Color(175, 175, 175, 255));
 					if(AddPlantScreen.GetActiveStatus())
 					{
-						AddPlantScreen.SubmitData(mainWindow, "plants", displayMap, contentView);
+						AddPlantScreen.SubmitData(mainWindow);
 					}
 					else if(CreateMapScreen.GetActiveStatus())
 					{
-						CreateMapScreen.SubmitData(mainWindow, "maps", displayMap, contentView);
+						CreateMapScreen.SubmitData(mainWindow);
+						if(CreateMapScreen.GetDataSubmitted())
+						{
+							CreateMapScreen.DisplayNewestMap(displayMap, contentView);
+							CreateMapScreen.SetDataSubmitted(false);
+						}
 					}
 					else if(EditPlantScreen.GetActiveStatus())
 					{
-						EditPlantScreen.SubmitData(mainWindow, "edit_plants", displayMap, contentView);
+						EditPlantScreen.SubmitData(mainWindow);
 					}
 					break;
 			}
