@@ -1,12 +1,14 @@
 /**
-    SDEV435-81 Capstone Project
-    ContentToDisplay.cpp
-    Purpose: Code file for the ContentToDisplay class.  This class
-      manages and handles what content should actually be drawn to
-      the window.
+  Garden Space Planner
+  ContentToDisplay.cpp
+  Purpose: Source code file for the ContentToDisplay class.  This class
+    manages and handles what content should actually be drawn to
+    the window.  Version 2.0.0 removes Content object parameters and
+    replaces them with SelectMap, CreateMap, AddPlant, and EditPlant
+    object parameters.
 
-    @author Jeremiah Kellogg
-    @version 1.0 12/08/19
+  @author Jeremiah Kellogg
+  @version 2.0.0 12/26/19
 */
 
 #include "ContentToDisplay.h"
@@ -19,10 +21,10 @@ ContentToDisplay::~ContentToDisplay() { }
 
 //Displays the most current Content object the user has selected.
 void ContentToDisplay::DisplayContent(sf::RenderWindow &window, Content &welcome,
-  Content &selectmap,
-  Content &createmap,
-  Content &addplant,
-  Content &editplant,
+  SelectMap &selectmap,
+  CreateMap &createmap,
+  AddPlant &addplant,
+  EditPlant &editplant,
   sf::Event &event,
   MapDisplay &mapDisplay,
   sf::View &view)
