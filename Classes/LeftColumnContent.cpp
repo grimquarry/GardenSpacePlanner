@@ -21,9 +21,6 @@ LeftColumnContent::LeftColumnContent() { }
 //Constructor
 LeftColumnContent::LeftColumnContent(sf::View &view)
 {
-  //Scrolling and first click on scrollbar should not be true on instantiation of the object.
-  m_isScrolling = false;
-  m_firstClick = false;
   m_leftColumnView = view;
 
   //Set defaults for sf::Text objects
@@ -50,39 +47,47 @@ LeftColumnContent::LeftColumnContent(sf::View &view)
 LeftColumnContent::~LeftColumnContent() { }
 
 //Add a Scrollbar in the left column.
+//Don't move to Scrollbarr class?  This class needs to instantiate a Scrollbar object, and this function is a good candidate for that.
 void LeftColumnContent::AddScrollBar()
 {
-
-  m_scrollContainer.setSize({m_leftColumnView.getSize().x * .07f, m_displayArea.getSize().y});
-  m_scrollContainer.setPosition({m_displayArea.getPosition().x + (m_displayArea.getSize().x - m_scrollContainer.getSize().x), m_displayArea.getPosition().y});
-  m_scrollContainer.setFillColor(sf::Color(220, 220, 220, 255));
+  m_scrollBar = &ptrAddress;
+  std::cout << "AddScrollBar was called" << std::endl;
+  m_scrollBar->SetView(m_leftColumnView);
+  m_scrollBar->SetContainerSize({m_leftColumnView.getSize().x * .07f, m_displayArea.getSize().y});
+  m_scrollBar->SetContainerPos({m_displayArea.getPosition().x + (m_displayArea.getSize().x - m_scrollBar->GetContainerSize().x), m_displayArea.getPosition().y});
+  m_scrollBar->SetContainerColor(sf::Color(220, 220, 220, 255));
 
   m_screenToViewRatio = m_displayArea.getSize().y / m_leftColumnView.getSize().y; //Used for properly sizing scrollbar slider.
 
-  m_scrollElement.setSize({m_scrollContainer.getSize().x * .75f, m_leftColumnView.getSize().y / m_screenToViewRatio});
-  m_scrollMinimum.x = m_scrollContainer.getPosition().x * 1.015f;
-  m_scrollMinimum.y =  m_scrollContainer.getPosition().y;
-  m_scrollMaximum.x = m_scrollContainer.getPosition().x * 1.01f;
-  m_scrollMaximum.y = m_scrollContainer.getGlobalBounds().height;
-  m_scrollElement.setPosition(m_scrollMinimum);
-  m_scrollElement.setFillColor(sf::Color(175, 175, 175, 255));
-  m_centerScreen.setPosition(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f));
+  m_scrollBar->SetElementSize({m_scrollBar->GetContainerSize().x * .75f, m_leftColumnView.getSize().y / m_screenToViewRatio});
+  /*m_scrollMinimum.x = m_scrollContainer.getPosition().x * 1.015f;
+  m_scrollMinimum.y =  m_scrollContainer.getPosition().y;*/
+  m_scrollBar->SetScrollMin();
+  /*m_scrollMaximum.x = m_scrollContainer.getPosition().x * 1.01f;
+  m_scrollMaximum.y = m_scrollContainer.getGlobalBounds().height;*/
+  m_scrollBar->SetScrollMax();
+  m_scrollBar->SetElementPos(m_scrollBar->GetScrollMin());
+  m_scrollBar->SetElementColor(sf::Color(175, 175, 175, 255));
+  m_scrollBar->SetCenterScreen(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f));
 }
 
 //Sets the m_firstClick member variable to true or false.
-void LeftColumnContent::SetFirstClick(bool click)
+//******Move to Scrollbar class.***********
+/*void LeftColumnContent::SetFirstClick(bool click)
 {
   m_firstClick = click;
-}
+}*/
 
 //Returns the value of the m_firstClick member variable.
-bool LeftColumnContent::GetFirstClick()
+//******Move to Scrollbar class.***********
+/*bool LeftColumnContent::GetFirstClick()
 {
   return m_firstClick;
-}
+}*/
 
 //Implements the logic behind scroll functionality
-void LeftColumnContent::Scroll(sf::RenderWindow &window, sf::RectangleShape &viewborder)
+//******Move to Scrollbar class.***********
+/*void LeftColumnContent::Scroll(sf::RenderWindow &window, sf::RectangleShape &viewborder)
 {
   sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.
   sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion);  //Translates mouse position in window to mouse position in the view.
@@ -117,9 +122,10 @@ void LeftColumnContent::Scroll(sf::RenderWindow &window, sf::RectangleShape &vie
     m_centerScreen.setPosition(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f));
   }
   m_firstClick = false;//first click is no longer true after the program loop runs once after scrollbar is clicked.
-}
+}*/
 
 //Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
+/*//******Move to Scrollbar class.***********
 bool LeftColumnContent::MouseOverScroll(sf::RenderWindow &window)
 {
   sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.
@@ -133,7 +139,7 @@ bool LeftColumnContent::MouseOverScroll(sf::RenderWindow &window)
     return true;
   }
   return false;
-}
+}*/
 
 //Returns true or false dependig on whether the mouse is positioned over a container listing plant info.
 bool LeftColumnContent::MouseOverPlantContainer(sf::RenderWindow &window)
@@ -155,28 +161,32 @@ bool LeftColumnContent::MouseOverPlantContainer(sf::RenderWindow &window)
 }
 
 //Returns an sf::Vector2f object containing x and y axis position coordinates of the scrollbar.
-sf::Vector2f LeftColumnContent::GetScrollPosition(ContentContainer &container)
+//******Move to Scrollbar class.***********
+/*sf::Vector2f LeftColumnContent::GetScrollPosition(ContentContainer &container)
 {
   return {m_centerScreen.getPosition().x, m_centerScreen.getPosition().y};
-}
+}*/
 
 //Sets whether or not the user is utilizing scroll functionality by passing the right value to the m_isScrolling member variable.
-void LeftColumnContent::SetScrolling(bool toScroll)
+//******Move to Scrollbar class.***********
+/*void LeftColumnContent::SetScrolling(bool toScroll)
 {
   m_isScrolling = toScroll;
-}
+}*/
 
 //Returns the value of the m_isScrolling member variable to determine if user is scrolling or not.
+/*//******Move to Scrollbar class.***********
 bool LeftColumnContent::GetScrolling()
 {
   return m_isScrolling;
-}
+}*/
 
 //Sets the color of the scrollbar (used for changing scrollbar color when user clicks on it).
-void LeftColumnContent::ChangeColor(sf::Color color)
+//******Move to Scrollbar class.***********
+/*void LeftColumnContent::ChangeColor(sf::Color color)
 {
   m_scrollElement.setFillColor(color);
-}
+}*/
 
 //Sets the size of the content area that the view can scroll over and sets the size of plant data containers.
 void LeftColumnContent::AddDisplayArea()
@@ -231,8 +241,9 @@ void LeftColumnContent::SetPlantContainerVector()
 void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
 {
   window.draw(m_displayArea);
-  window.draw(m_scrollContainer);
-  window.draw(m_scrollElement);
+  m_scrollBar->Draw(window);
+  //window.draw(m_scrollContainer); //Move to ScrollBar class, and use that class's draw function here.
+  //window.draw(m_scrollElement);  //Move to ScrollBar class, and use that class's draw function here.
   for(int i = 0; i < m_plantDisplayList.size(); i++)
   {
     m_plantContainer.setPosition(m_plantDisplayList[i]);
@@ -288,6 +299,16 @@ void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
   }
 }
 
+ScrollBar* LeftColumnContent::GetScrollBar()
+{
+  //std::cout << "GetScrollBar was called" << std::endl;
+  return m_scrollBar;
+}
+
+void LeftColumnContent::ChangeColor(sf::Color color)
+{
+  m_scrollBar->SetElementColor(color);
+}
 
 /**********Private Functions**********/
 
