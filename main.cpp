@@ -227,11 +227,12 @@ int main()
 							CreateMapScreen.MakeInactive();
 							displayMap.SetDisplay(false);
 						}
-						else if(leftColumnDisplay.MouseOverScroll(mainWindow))
+						else if(leftColumnDisplay.GetScrollBar()->MouseOverScroll(mainWindow))
 						{
-							leftColumnDisplay.ChangeColor(sf::Color(150, 150, 150, 255));
-							leftColumnDisplay.SetScrolling(true);
-							leftColumnDisplay.SetFirstClick(true);
+							std::cout << "We entered the Scrolling function list" << std::endl;
+							leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(150, 150, 150, 255));
+							leftColumnDisplay.GetScrollBar()->SetScrolling(true);
+							leftColumnDisplay.GetScrollBar()->SetFirstClick(true);
 						}
 						else if(SelectMapScreen.MouseOverScroll(mainWindow))
 						{
@@ -270,8 +271,8 @@ int main()
 					}
 					break;
 				case sf::Event::MouseButtonReleased:
-					leftColumnDisplay.SetScrolling(false);
-					leftColumnDisplay.ChangeColor(sf::Color(175, 175, 175, 255));
+					leftColumnDisplay.GetScrollBar()->SetScrolling(false);
+					leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(175, 175, 175, 255));
 					SelectMapScreen.SetScrolling(false);
 					SelectMapScreen.ChangeColor(sf::Color(175, 175, 175, 255));
 					if(AddPlantScreen.GetActiveStatus())
@@ -361,10 +362,12 @@ int main()
 		}
 		//Left column Content to display in leftColumnView.
 		mainWindow.setView(leftColumnView);
-		leftColumnView.setCenter(leftColumnDisplay.GetScrollPosition(leftColumn));
-		if(leftColumnDisplay.GetScrolling())
+		leftColumnView.setCenter(leftColumnDisplay.GetScrollBar()->GetScrollPosition(leftColumn));
+		//std::cout << "Left Column Display is: " << leftColumnDisplay.GetScrollBar().GetScrolling() << std::endl;
+		if(leftColumnDisplay.GetScrollBar()->GetScrolling())
 		{
-			leftColumnDisplay.Scroll(mainWindow, leftColumnViewBorder);
+			std::cout << "GetScrolling Returned true" << std::endl;
+			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow, leftColumnViewBorder);
 		}
 
 		leftColumnDisplay.Draw(mainWindow, event);
