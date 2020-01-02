@@ -35,9 +35,9 @@ void ContentToDisplay::DisplayContent(sf::RenderWindow &window, Content &welcome
   }
   else if(selectmap.GetActiveStatus())
   {
-    if(selectmap.GetScrolling())
+    if(selectmap.GetScrollBar()->GetScrolling())
 		{
-			selectmap.Scroll(window);
+			selectmap.GetScrollBar()->Scroll(window);
 		}
 
     selectmap.DrawMapMenu(window, event, mapDisplay, view);
