@@ -1,14 +1,13 @@
 /**
-    SDEV435-81 Capstone Project
+    Garden Space Planner
     LeftColumnContent.h
     Purpose: Header file for the LeftColumnContent class.  This class
-      creates a space for creating and displaying content in the
-      left column of the Garden Space Planner program's GUI.  This
-      area holds a list of plants user can select to edit or drop
-      into a garden map.
+      creates a space for displaying content in the left column of the
+      Garden Space Planner program's GUI.  This area holds a list of
+      plants user can select to edit or drop into a garden map.
 
     @author Jeremiah Kellogg
-    @version 1.0.1 12/08/19
+    @version 2.0.0 01/02/20
 */
 
 #pragma once
@@ -43,39 +42,7 @@ public:
   /**
     Add a Scrollbar in the left column.
   */
-  /*******Don't Move to new Scrollbar class????**********/
   void AddScrollBar();
-
-  /**
-    Sets the m_firstClick member variable to true or false.
-
-    @param click A true or false value.
-  */
-  /*******Move to new Scrollbar class**********/
-  //void SetFirstClick(bool click);
-
-  /**
-    Returns the value of the m_firstClick member variable.
-  */
-  /*******Move to new Scrollbar class**********/
-  //bool GetFirstClick();
-
-  /**
-    Implements the logic behind scroll functionality
-
-    @param &window The sf::RenderWindow object the scrollbar should be drawn to.
-    @param &viewborder References the sf::RectangleShape object set as a border for the left column.
-  */
-  /*******Move to new Scrollbar class**********/
-  //void Scroll(sf::RenderWindow &window, sf::RectangleShape &viewborder);
-
-  /**
-    Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
-
-    @param &window The sf::RenderWindow object the scrollbar is drawn to.
-  */
-  /*******Move to new Scrollbar class**********/
-  //bool MouseOverScroll(sf::RenderWindow &window);
 
   /**
     Returns true or false dependig on whether the mouse is positioned over a container listing plant info.
@@ -83,36 +50,6 @@ public:
     @param &window References the sf::RenderWindow object the plant container is drawn to.
   */
   bool MouseOverPlantContainer(sf::RenderWindow &window);
-
-  /**
-    Returns an sf::Vector2f object containing x and y axis position coordinates of the scrollbar.
-
-    @param &container References a ContentContainer object to get scrollbar position relative to the content container position.
-  */
-  /*******Move to new Scrollbar class**********/
-  //sf::Vector2f GetScrollPosition(ContentContainer &container);
-
-  /**
-    Sets whether or not the user is utilizing scroll functionality by passing the right value to the m_isScrolling member variable.
-
-    @param toScroll The boolean value to be assigned to m_isScrolling member variable.
-  */
-  /*******Move to new Scrollbar class**********/
-  //void SetScrolling(bool toScroll);
-
-  /**
-    Returns the value of the m_isScrolling member variable to determine if user is scrolling or not.
-  */
-  /*******Move to new Scrollbar class**********/
-  //bool GetScrolling();
-
-  /**
-    Sets the color of the scrollbar (used for changing scrollbar color when user clicks on it).
-
-    @param color The sf::Color object passed to m_scrollElement (scrollbar) to set the fill color.
-  */
-  /*******Move to new Scrollbar class**********/
-  //void ChangeColor(sf::Color color);
 
   /**
     Sets the size of the content area that the view can scroll over and sets the size of plant data containers.
@@ -130,29 +67,21 @@ public:
   void SetPlantContainerVector();
 
   /**
-    Draws the m_displayArea, m_scrollElement, m_scrollContainer, m_plantContainer, m_plantTxtName, m_plantTxtVariety, and m_plantTxtSpacing object to the window.
+    Draws the m_displayArea, m_scrollBar pointer, m_plantContainer, m_plantTxtName, m_plantTxtVariety, and m_plantTxtSpacing object to the window.
 
     @param &window The sf::RenderWindow object the left column objects should be drawn to.
     @param event The event polled in main.cpp, used to determin mouse hovering to change colors of elements being hovered over.
   */
   void Draw(sf::RenderWindow &window, sf::Event event);
 
+  /**
+    Returns a pointer to a ScrollBar object that's used for calling ScrollBar class functions.
+  */
   ScrollBar* GetScrollBar();
 
-  void ChangeColor(sf::Color color);
-
 private:
-  //sf::RectangleShape m_scrollElement; //Object for the scrollbar slider. /*******Move to new Scrollbar class... used in AddScrollBar function, so new definition is needed there**********/
-  //sf::Vector2f m_scrollMinimum; //Object with x & coordinates for minimum scollbar position. /*******Move to new Scrollbar class... used in AddScrollBar function, so new definition is needed there**********/
-  //sf::Vector2f m_scrollMaximum; //Object with x & y coordinates for maximum scrollbar position. /*******Move to new Scrollbar class... used in AddScrollBar function, so new definition is needed there**********/
-  //float mouseYNew; //Most current postion of the mouse's y coordinate position. /*******Move to new Scrollbar class**********/
-  //float m_offset; //Offset between where the user clicked the scrollbar and the position of the scrollbar. /*******Move to new Scrollbar class**********/
-  //sf::RectangleShape m_centerScreen;//Object that determines where the view camera is positioned over the content display. /*******Move to new Scrollbar class... used in AddScrollBar function, so new definition is needed there**********/
-  //sf::RectangleShape m_scrollContainer;  //Container holding the scrollbar slider. /*******Move to new Scrollbar class... used in AddScrollBar function, so new definition is needed there**********/
-  sf::RectangleShape m_displayArea;  //X and y size of the content being displayed.
+  sf::RectangleShape m_displayArea;  //Stores x and y size of the content being displayed.
   sf::RectangleShape m_plantContainer;  //Object for a container storing plant data.
-  //bool m_isScrolling;  //Member variable identifying if the user is scrolling or not. /*******Move to new Scrollbar class**********/
-  //bool m_firstClick;  //Member variable identifying if a user is clicking on the scrollbar from a non scrolling state. /*******Move to new Scrollbar class**********/
   sf::View m_leftColumnView;  //Object identifyinng the view the left column should be associated with.
   float m_screenToViewRatio;  //Ratio between the content displayed (on the screen) to the smaller size of the view.
   Plant m_plant;  //Object storing data on a plant.
@@ -174,6 +103,8 @@ private:
   sql::Statement *stmt;
   sql::ResultSet *res;
 
-  //Finds the currently selected Plant in the garden_space_planner.plants MySQL table;
+  /**
+    Finds the currently selected Plant in the garden_space_planner.plants MySQL table;
+  */
   void GetSelectedPlant();
 };

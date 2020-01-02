@@ -2,13 +2,12 @@
     SDEV435-81 Capstone Project
     LeftColumnContent.cpp
     Purpose: Code file for the LeftColumnContent class.  This class
-      creates a space for creating and displaying content in the
-      left column of the Garden Space Planner program's GUI.  This
-      area holds a list of plants user can select to edit or drop
-      into a garden map.
+      creates a space for displaying content in the left column of
+      the Garden Space Planner program's GUI.  This area holds a list
+      of plants user can select to edit or drop into a garden map.
 
     @author Jeremiah Kellogg
-    @version 1.0.1 12/08/19
+    @version 2.0.0 01/02/20
 */
 
 #include "LeftColumnContent.h"
@@ -40,18 +39,16 @@ LeftColumnContent::LeftColumnContent(sf::View &view)
   m_plantTxtRow.setFillColor(sf::Color::Black);
   m_plantTxtRow.setCharacterSize(15);
 
-  GetSelectedPlant();
+  GetSelectedPlant(); //Not calling this function in the constructor causes odd behavior that should probably be investigated.
 }
 
 //Default Destructor.
 LeftColumnContent::~LeftColumnContent() { }
 
 //Add a Scrollbar in the left column.
-//Don't move to Scrollbarr class?  This class needs to instantiate a Scrollbar object, and this function is a good candidate for that.
 void LeftColumnContent::AddScrollBar()
 {
   m_scrollBar = &ptrAddress;
-  std::cout << "AddScrollBar was called" << std::endl;
   m_scrollBar->SetView(m_leftColumnView);
   m_scrollBar->SetContainerSize({m_leftColumnView.getSize().x * .07f, m_displayArea.getSize().y});
   m_scrollBar->SetContainerPos({m_displayArea.getPosition().x + (m_displayArea.getSize().x - m_scrollBar->GetContainerSize().x), m_displayArea.getPosition().y});
@@ -60,86 +57,12 @@ void LeftColumnContent::AddScrollBar()
   m_screenToViewRatio = m_displayArea.getSize().y / m_leftColumnView.getSize().y; //Used for properly sizing scrollbar slider.
 
   m_scrollBar->SetElementSize({m_scrollBar->GetContainerSize().x * .75f, m_leftColumnView.getSize().y / m_screenToViewRatio});
-  /*m_scrollMinimum.x = m_scrollContainer.getPosition().x * 1.015f;
-  m_scrollMinimum.y =  m_scrollContainer.getPosition().y;*/
   m_scrollBar->SetScrollMin();
-  /*m_scrollMaximum.x = m_scrollContainer.getPosition().x * 1.01f;
-  m_scrollMaximum.y = m_scrollContainer.getGlobalBounds().height;*/
   m_scrollBar->SetScrollMax();
   m_scrollBar->SetElementPos(m_scrollBar->GetScrollMin());
   m_scrollBar->SetElementColor(sf::Color(175, 175, 175, 255));
   m_scrollBar->SetCenterScreen(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f));
 }
-
-//Sets the m_firstClick member variable to true or false.
-//******Move to Scrollbar class.***********
-/*void LeftColumnContent::SetFirstClick(bool click)
-{
-  m_firstClick = click;
-}*/
-
-//Returns the value of the m_firstClick member variable.
-//******Move to Scrollbar class.***********
-/*bool LeftColumnContent::GetFirstClick()
-{
-  return m_firstClick;
-}*/
-
-//Implements the logic behind scroll functionality
-//******Move to Scrollbar class.***********
-/*void LeftColumnContent::Scroll(sf::RenderWindow &window, sf::RectangleShape &viewborder)
-{
-  sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.
-  sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion);  //Translates mouse position in window to mouse position in the view.
-
-  mouseYNew = mouseViewPosition.y;
-
-  //Establish difference between scroll bar slider position and where the user clicked in the scroll bar slider.
-  if(m_firstClick)
-  {
-    m_offset = mouseYNew - m_scrollElement.getPosition().y;
-  }
-
-  //Algorithm for determining how fast the view should scroll in relation to scroll bar slider movement.
-  float viewScrollSpeed = (m_scrollContainer.getSize().y - m_leftColumnView.getSize().y) / (m_scrollContainer.getSize().y - m_scrollElement.getSize().y);
-
-  //What to do if scroll bar slider is within bounds of scroll bar container.
-  if(mouseYNew - m_offset > m_scrollContainer.getPosition().y && mouseYNew - m_offset < m_scrollContainer.getSize().y - m_scrollElement.getSize().y)
-  {
-    m_scrollElement.setPosition(m_scrollElement.getPosition().x, mouseYNew - m_offset);
-    m_centerScreen.setPosition(m_leftColumnView.getSize().x / 2.f, m_leftColumnView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
-  }
-  //What to do if scroll bar slider is outside the max bounds of scrollbar container.
-  else if(mouseYNew - m_offset > m_scrollContainer.getSize().y)
-  {
-    m_scrollElement.setPosition(m_scrollMaximum);
-    m_centerScreen.setPosition(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f) + m_scrollMaximum.y);
-  }
-  //What to do if scrollbar slider is below the minimum bounds of scrollbar container.
-  else if (mouseYNew - m_offset < m_scrollContainer.getPosition().y)
-  {
-    m_scrollElement.setPosition(m_scrollMinimum);
-    m_centerScreen.setPosition(m_leftColumnView.getSize().x / 2.f, (m_leftColumnView.getSize().y / 2.f));
-  }
-  m_firstClick = false;//first click is no longer true after the program loop runs once after scrollbar is clicked.
-}*/
-
-//Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
-/*//******Move to Scrollbar class.***********
-bool LeftColumnContent::MouseOverScroll(sf::RenderWindow &window)
-{
-  sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.
-  sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion); //Translates mouse position in window to mouse position in the view.
-
-  float scrollPosX = m_scrollElement.getPosition().x;
-  float scrollXPosWidth = scrollPosX + m_scrollElement.getGlobalBounds().width;
-
-  if(mouseViewPosition.x < scrollXPosWidth && mouseViewPosition.x > scrollPosX && mouseViewPosition.y < m_scrollElement.getPosition().y + m_scrollElement.getSize().y && mouseViewPosition.y > m_scrollContainer.getPosition().y)
-  {
-    return true;
-  }
-  return false;
-}*/
 
 //Returns true or false dependig on whether the mouse is positioned over a container listing plant info.
 bool LeftColumnContent::MouseOverPlantContainer(sf::RenderWindow &window)
@@ -159,34 +82,6 @@ bool LeftColumnContent::MouseOverPlantContainer(sf::RenderWindow &window)
   }
   return false;
 }
-
-//Returns an sf::Vector2f object containing x and y axis position coordinates of the scrollbar.
-//******Move to Scrollbar class.***********
-/*sf::Vector2f LeftColumnContent::GetScrollPosition(ContentContainer &container)
-{
-  return {m_centerScreen.getPosition().x, m_centerScreen.getPosition().y};
-}*/
-
-//Sets whether or not the user is utilizing scroll functionality by passing the right value to the m_isScrolling member variable.
-//******Move to Scrollbar class.***********
-/*void LeftColumnContent::SetScrolling(bool toScroll)
-{
-  m_isScrolling = toScroll;
-}*/
-
-//Returns the value of the m_isScrolling member variable to determine if user is scrolling or not.
-/*//******Move to Scrollbar class.***********
-bool LeftColumnContent::GetScrolling()
-{
-  return m_isScrolling;
-}*/
-
-//Sets the color of the scrollbar (used for changing scrollbar color when user clicks on it).
-//******Move to Scrollbar class.***********
-/*void LeftColumnContent::ChangeColor(sf::Color color)
-{
-  m_scrollElement.setFillColor(color);
-}*/
 
 //Sets the size of the content area that the view can scroll over and sets the size of plant data containers.
 void LeftColumnContent::AddDisplayArea()
@@ -237,13 +132,11 @@ void LeftColumnContent::SetPlantContainerVector()
   }
 }
 
-//Draws the m_displayArea, m_scrollElement, m_scrollContainer, m_plantContainer, m_plantTxtName, m_plantTxtVariety, and m_plantTxtSpacing object to the window.
+//Draws the m_displayArea, m_scrollBar pointer, m_plantContainer, m_plantTxtName, m_plantTxtVariety, and m_plantTxtSpacing object to the window.
 void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
 {
   window.draw(m_displayArea);
   m_scrollBar->Draw(window);
-  //window.draw(m_scrollContainer); //Move to ScrollBar class, and use that class's draw function here.
-  //window.draw(m_scrollElement);  //Move to ScrollBar class, and use that class's draw function here.
   for(int i = 0; i < m_plantDisplayList.size(); i++)
   {
     m_plantContainer.setPosition(m_plantDisplayList[i]);
@@ -299,15 +192,10 @@ void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
   }
 }
 
+//Returns a pointer to a ScrollBar object that's used for calling ScrollBar class functions.
 ScrollBar* LeftColumnContent::GetScrollBar()
 {
-  //std::cout << "GetScrollBar was called" << std::endl;
   return m_scrollBar;
-}
-
-void LeftColumnContent::ChangeColor(sf::Color color)
-{
-  m_scrollBar->SetElementColor(color);
 }
 
 /**********Private Functions**********/
