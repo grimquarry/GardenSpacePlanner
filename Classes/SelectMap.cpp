@@ -6,15 +6,18 @@
   users can select maps they've already created to edit.
 
   @author Jeremiah Kellogg
-  @version 1.0.0 12/26/19
+  @version 2.0.0 01/02/20
 */
 
 #include "SelectMap.h"
 
-SelectMap::SelectMap()
+//Default Constructor
+SelectMap::SelectMap() { }
+
+//Constructor
+SelectMap::SelectMap(sf::View &view)
 {
-  m_isScrolling = false;
-  m_firstClick = false;
+  m_contentView = view;
 
   m_mapTxtName.setFont(m_ubuntu);
   m_mapTxtName.setFillColor(sf::Color::Black);
@@ -26,6 +29,7 @@ SelectMap::SelectMap()
   m_mapTxtWidth.setFillColor(sf::Color::Black);
 }
 
+//Destructor
 SelectMap::~SelectMap() { }
 
 //Populates the m_mapList vector with a list of maps from the MySQL database.
@@ -93,12 +97,11 @@ void SelectMap::DrawMapMenu(sf::RenderWindow &window, sf::Event &event, MapDispl
 {
   //Update lists and sizes in case a map was added or deleted
   SetMapList();
-  UpdateScrollArea();
+  m_scrollBar->UpdateScrollArea(m_mapSelectContainer, m_displayArea, m_mapList, m_screenToViewRatio);
   SetMapContainerVector();
 
   window.draw(m_displayArea);
-  window.draw(m_scrollContainer);
-  window.draw(m_scrollElement);
+  m_scrollBar->Draw(window);
 
   //Loop through map list and draw available maps to the window
   for(int i = 0; i < m_mapContainerList.size(); i++)
@@ -137,18 +140,9 @@ void SelectMap::DrawMapMenu(sf::RenderWindow &window, sf::Event &event, MapDispl
   }
 }
 
-
-/*************************Function specific to Scrollbar******************************/
-
-//Set the view the Content object is associated with.
-void SelectMap::SetView(sf::View &view)
-{
-  m_contentView = view;
-}
-
 /*Sets the size of m_mapSelectContainer data member and sets the size and position of the m_displayArea data member
   based on the m_contentView data member sf::View object.*/
-void SelectMap::AddScrollArea()
+void SelectMap::AddDisplayArea()
 {
   m_mapSelectContainer.setSize({m_contentView.getSize().x - (m_contentView.getSize().x * .02f), m_contentView.getSize().y / 4});
   m_mapSelectContainer.setOutlineColor(sf::Color(42, 85, 34, 255));
@@ -164,125 +158,23 @@ void SelectMap::AddScrollArea()
 //Adds scrollbar functionality and objects to the screen users can select maps from.
 void SelectMap::AddScrollBar()
 {
-  m_scrollContainer.setSize({m_contentView.getSize().x * .02f, m_displayArea.getSize().y});
-  m_scrollContainer.setPosition({m_displayArea.getPosition().x + (m_displayArea.getSize().x - m_scrollContainer.getSize().x), m_displayArea.getPosition().y});
-  m_scrollContainer.setFillColor(sf::Color(220, 220, 220, 255));
+  m_scrollBar = &ptrAddress;
+  m_scrollBar->SetView(m_contentView);
+  m_scrollBar->SetContainerSize({m_contentView.getSize().x * .02f, m_displayArea.getSize().y});
+  m_scrollBar->SetContainerPos({m_displayArea.getPosition().x + (m_displayArea.getSize().x - m_scrollBar->GetContainerSize().x), m_displayArea.getPosition().y});
+  m_scrollBar->SetContainerColor(sf::Color(220, 220, 220, 255));
 
-  m_screenToViewRatio = m_displayArea.getSize().y / m_contentView.getSize().y;
+  m_screenToViewRatio = m_displayArea.getSize().y / m_contentView.getSize().y; //Used for properly sizing scrollbar slider.
 
-  m_scrollElement.setSize({m_scrollContainer.getSize().x * .75f, m_contentView.getSize().y / m_screenToViewRatio});
-  m_scrollMinimum.x = m_scrollContainer.getPosition().x * 1.0032f;
-  m_scrollMinimum.y =  m_scrollContainer.getPosition().y;
-  m_scrollMaximum.x = m_scrollContainer.getPosition().x * 1.01f;
-  m_scrollMaximum.y = m_scrollContainer.getGlobalBounds().height;
-  m_scrollElement.setPosition(m_scrollMinimum);
-  m_scrollElement.setFillColor(sf::Color(175, 175, 175, 255));
-  m_centerScreen.setPosition(m_contentView.getSize().x / 2.f, (m_contentView.getSize().y / 2.f));
+  m_scrollBar->SetElementSize({m_scrollBar->GetContainerSize().x * .75f, m_contentView.getSize().y / m_screenToViewRatio});
+  m_scrollBar->SetScrollMin();
+  m_scrollBar->SetScrollMax();
+  m_scrollBar->SetElementPos(/*m_scrollBar->GetScrollMin()*/{m_scrollBar->GetScrollMin().x -12.f, m_scrollBar->GetScrollMin().y}); //The -12 is an offset that I'm not sure why is needed.
+  m_scrollBar->SetElementColor(sf::Color(175, 175, 175, 255));
+  m_scrollBar->SetCenterScreen(m_contentView.getSize().x / 2.f, (m_contentView.getSize().y / 2.f));
 }
 
-//Returns a boolean value indicating whether or not the user's mouse is hovering over the scrollbar.
-bool SelectMap::MouseOverScroll(sf::RenderWindow &window)
+ScrollBar* SelectMap::GetScrollBar()
 {
-  sf::Vector2i mouseWindowPosition = sf::Mouse::getPosition(window);  //Mouse position in relation to the screen, does not account for accurate mouse view positions
-  sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPosition); //This is necessary for getting accurate mouse view positions, which have their own coordinates
-  //Accounts for weird offset that was happening for currently undetermined reasons
-  float offset = window.getSize().x * .304;
-  mouseViewPosition.x -= offset;
-
-  float scrollPosX = m_scrollElement.getPosition().x;
-  float scrollXPosWidth = scrollPosX + m_scrollElement.getGlobalBounds().width;
-
-  if(mouseViewPosition.x < scrollXPosWidth && mouseViewPosition.x > scrollPosX && mouseViewPosition.y < m_scrollElement.getPosition().y + m_scrollElement.getSize().y && mouseViewPosition.y > m_scrollContainer.getPosition().y)
-  {
-    return true;
-  }
-  return false;
-}
-
-//Sets the color of the scrollbar (used for changing color when the user clicks on the scrollbar).
-void SelectMap::ChangeColor(sf::Color color)
-{
-  m_scrollElement.setFillColor(color);
-}
-
-//Sets whether or not the user is currently using the scroll bar.
-void SelectMap::SetScrolling(bool toScroll)  //*******MOVE TO SelectMap CLASS**********/
-{
-  m_isScrolling = toScroll;
-}
-
-//Returns the value for the boolean data member m_isScrolling to indicate whether a user is trying to scroll or not.
-bool SelectMap::GetScrolling()  //*******MOVE TO SelectMap CLASS**********/
-{
-  return m_isScrolling;
-}
-
-/*Sets whether or not the user is initializing scroll functionality from a state where they were not using the scrollbar.
-  This value is saved to the boolean data member m_firstClick.*/
-void SelectMap::SetFirstClick(bool click)
-{
-  m_firstClick = click;
-}
-
-//Returns the value for the boolean data member m_firstClick to indicate whether a user has clicked on the scrollbar or not.
-bool SelectMap::GetFirstClick()
-{
-  return m_firstClick;
-}
-
-//Returns sf::Vector2f object containing x and y coordinate for the current scrollbar position.
-sf::Vector2f SelectMap::GetScrollPosition(ContentContainer &container)
-{
-  return {m_centerScreen.getPosition().x, m_centerScreen.getPosition().y};
-}
-
-//Updates size and position of scroll area when a new Map object is added to or removed from the m_mapsList vector.
-void SelectMap::UpdateScrollArea()
-{
-  m_mapSelectContainer.setSize({m_contentView.getSize().x - (m_contentView.getSize().x * .02f), m_contentView.getSize().y / 4});
-  m_displayArea.setSize({m_contentView.getSize().x, m_mapSelectContainer.getSize().y * m_mapList.size()});
-  m_scrollContainer.setSize({m_contentView.getSize().x * .02f, m_displayArea.getSize().y});
-  m_scrollElement.setSize({m_scrollContainer.getSize().x * .75f, m_contentView.getSize().y / m_screenToViewRatio});
-  m_scrollMinimum.x = m_scrollContainer.getPosition().x * 1.0032f;
-  m_scrollMinimum.y =  m_scrollContainer.getPosition().y;
-  m_scrollMaximum.x = m_scrollContainer.getPosition().x * 1.01f;
-  m_scrollMaximum.y = m_scrollContainer.getGlobalBounds().height;
-}
-
-//Updates position of scroll bar and centered position of the view on each loop.
-void SelectMap::Scroll(sf::RenderWindow &window) //*******MOVE TO SelectMap CLASS**********/
-{
-  sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window);
-  sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion);
-
-  mouseYNew = mouseViewPosition.y;
-
-  if(m_firstClick)
-  {
-    m_offset = mouseYNew - m_scrollElement.getPosition().y;
-  }
-
-  //Algorithm for determining how fast the view should scroll in relation to scrollbar movement
-  float viewScrollSpeed = (m_scrollContainer.getSize().y - m_contentView.getSize().y) / (m_scrollContainer.getSize().y - m_scrollElement.getSize().y);
-
-  //Instructions for when mouse and scrollbar are in bounds of the scrollbar container
-  if(mouseYNew - m_offset > m_scrollContainer.getPosition().y && mouseYNew - m_offset < m_scrollContainer.getSize().y - m_scrollElement.getSize().y)
-  {
-    m_scrollElement.setPosition(m_scrollElement.getPosition().x, mouseYNew - m_offset);
-    m_centerScreen.setPosition(m_contentView.getSize().x / 2.f, m_contentView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
-  }
-  //Instructions for stopping scrollbar from going past the max position of the scrollbar container
-  else if(mouseYNew - m_offset > m_scrollContainer.getSize().y)
-  {
-    m_scrollElement.setPosition(m_scrollMaximum);
-    m_centerScreen.setPosition(m_contentView.getSize().x / 2.f, (m_contentView.getSize().y / 2.f) + m_scrollMaximum.y);
-  }
-  //Instructions for stopping scrollbar from going past the min position of the scrollbar container
-  else if (mouseYNew - m_offset < m_scrollContainer.getPosition().y)
-  {
-    m_scrollElement.setPosition(m_scrollMinimum);
-    m_centerScreen.setPosition(m_contentView.getSize().x / 2.f, (m_contentView.getSize().y / 2.f));
-  }
-
-  m_firstClick = false; //First click has done it's job after first loop so it's set to false
+  return m_scrollBar;
 }
