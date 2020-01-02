@@ -6,10 +6,10 @@
 			It allows users to add new plants and edit existing plants as needed.
 
     @author Jeremiah Kellogg
-    @version 2.0.0 12/26/19
+    @version 2.2.0 01/02/20
 */
 
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Classes/ContentContainer.h"
@@ -91,10 +91,9 @@ int main()
 	WelcomeScreen.AddText("Text/WelcomeScreen.txt");
 	WelcomeScreen.MakeActive();
 
-	SelectMap SelectMapScreen;
-	SelectMapScreen.SetView(contentView);
+	SelectMap SelectMapScreen(contentView);
 	SelectMapScreen.SetMapList();
-	SelectMapScreen.AddScrollArea();
+	SelectMapScreen.AddDisplayArea();
 	SelectMapScreen.AddScrollBar();
 	SelectMapScreen.SetMapContainerVector();
 
@@ -229,16 +228,17 @@ int main()
 						}
 						else if(leftColumnDisplay.GetScrollBar()->MouseOverScroll(mainWindow))
 						{
-							std::cout << "We entered the Scrolling function list" << std::endl;
+							//std::cout << "We entered the Scrolling function list" << std::endl;
 							leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(150, 150, 150, 255));
 							leftColumnDisplay.GetScrollBar()->SetScrolling(true);
 							leftColumnDisplay.GetScrollBar()->SetFirstClick(true);
 						}
-						else if(SelectMapScreen.MouseOverScroll(mainWindow))
+						else if(SelectMapScreen.GetScrollBar()->MouseOverScroll(mainWindow, .304f))
 						{
-							SelectMapScreen.ChangeColor(sf::Color(150, 150, 150, 255));
-							SelectMapScreen.SetScrolling(true);
-							SelectMapScreen.SetFirstClick(true);
+							std::cout << "Mouse over scroll initiated" << std::endl;
+							SelectMapScreen.GetScrollBar()->SetElementColor(sf::Color(150, 150, 150, 255));
+							SelectMapScreen.GetScrollBar()->SetScrolling(true);
+							SelectMapScreen.GetScrollBar()->SetFirstClick(true);
 						}
 						if(displayMap.GetDisplay())
 						{
@@ -273,8 +273,8 @@ int main()
 				case sf::Event::MouseButtonReleased:
 					leftColumnDisplay.GetScrollBar()->SetScrolling(false);
 					leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(175, 175, 175, 255));
-					SelectMapScreen.SetScrolling(false);
-					SelectMapScreen.ChangeColor(sf::Color(175, 175, 175, 255));
+					SelectMapScreen.GetScrollBar()->SetScrolling(false);
+					SelectMapScreen.GetScrollBar()->SetElementColor(sf::Color(175, 175, 175, 255));
 					if(AddPlantScreen.GetActiveStatus())
 					{
 						AddPlantScreen.SubmitData(mainWindow);
@@ -351,7 +351,7 @@ int main()
 			mainWindow.setView(contentView);
 			if(SelectMapScreen.GetActiveStatus())
 			{
-				contentView.setCenter(SelectMapScreen.GetScrollPosition(mainContent));
+				contentView.setCenter(SelectMapScreen.GetScrollBar()->GetScrollPosition(mainContent));
 			}
 			else
 			{
@@ -363,11 +363,9 @@ int main()
 		//Left column Content to display in leftColumnView.
 		mainWindow.setView(leftColumnView);
 		leftColumnView.setCenter(leftColumnDisplay.GetScrollBar()->GetScrollPosition(leftColumn));
-		//std::cout << "Left Column Display is: " << leftColumnDisplay.GetScrollBar().GetScrolling() << std::endl;
 		if(leftColumnDisplay.GetScrollBar()->GetScrolling())
 		{
-			std::cout << "GetScrolling Returned true" << std::endl;
-			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow, leftColumnViewBorder);
+			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow);
 		}
 
 		leftColumnDisplay.Draw(mainWindow, event);
