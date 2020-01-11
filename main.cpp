@@ -6,7 +6,7 @@
 			It allows users to add new plants and edit existing plants as needed.
 
     @author Jeremiah Kellogg
-    @version 2.2.0 01/02/20
+    @version 2.2.1 01/02/20
 */
 
 //#include <stdlib.h>
@@ -226,16 +226,16 @@ int main()
 							CreateMapScreen.MakeInactive();
 							displayMap.SetDisplay(false);
 						}
-						else if(leftColumnDisplay.GetScrollBar()->MouseOverScroll(mainWindow))
+						else if(leftColumnDisplay.GetScrollBar()->MouseOverScroll(mainWindow, .9793f, .2968f))
 						{
-							//std::cout << "We entered the Scrolling function list" << std::endl;
+							//std::cout << "*************LeftColumnDisplay***********" << std::endl;
 							leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(150, 150, 150, 255));
 							leftColumnDisplay.GetScrollBar()->SetScrolling(true);
 							leftColumnDisplay.GetScrollBar()->SetFirstClick(true);
 						}
-						else if(SelectMapScreen.GetScrollBar()->MouseOverScroll(mainWindow, .304f))
+					  else if(SelectMapScreen.GetScrollBar()->MouseOverScroll(mainWindow/*, .304f*/))
 						{
-							std::cout << "Mouse over scroll initiated" << std::endl;
+							//std::cout << "***********SelectMapScreen***************" << std::endl;
 							SelectMapScreen.GetScrollBar()->SetElementColor(sf::Color(150, 150, 150, 255));
 							SelectMapScreen.GetScrollBar()->SetScrolling(true);
 							SelectMapScreen.GetScrollBar()->SetFirstClick(true);
