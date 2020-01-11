@@ -5,7 +5,7 @@
   a scrollbar to content displayed in a sf::View object.
 
   @author Jeremiah Kellogg
-  @version 1.0.0 01/02/20
+  @version 1.0.1 01/11/20
 */
 #include "ScrollBar.h"
 
@@ -70,13 +70,21 @@ void ScrollBar::Scroll(sf::RenderWindow &window)
 }
 
 //Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
-bool ScrollBar::MouseOverScroll(sf::RenderWindow &window, float offset)
+bool ScrollBar::MouseOverScroll(sf::RenderWindow &window, float x_offset, float y_offset)
 {
   sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.  *****Should this be it's own function?  It's used in other spots, too*****
+  window.setView(m_scrollBarView);
   sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion); //Translates mouse position in window to mouse position in the view.  *****Should this be it's own function?  It's used in other spots, too*****
 
-  float adjustXPosition = window.getSize().x * offset;
+  //std::cout << "Scrollbar view size for x is: "<< m_scrollBarView.getSize().x << std::endl;
+  //std::cout << "Scrollbar view size for y is: "<< m_scrollBarView.getSize().y << std::endl;
+
+  //Use offset paramters to adjust mouse to view coordinates for Views that may not have been implemented properly.
+  //This was done to account for the weird offset in the leftColumnView sf::View object that I may have implemented in a bad way (likely trying to account for window to view offsets).
+  float adjustXPosition = m_scrollBarView.getSize().x * x_offset;
   mouseViewPosition.x -= adjustXPosition;
+  float adjustYPosition = m_scrollBarView.getSize().y * y_offset;
+  mouseViewPosition.y -=adjustYPosition;
 
   //std::cout << "mouseViewPostion X is: " << mouseViewPosition.x << std::endl;
   //std::cout << "mouseViewPostion Y is: " << mouseViewPosition.y << std::endl;

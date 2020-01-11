@@ -5,7 +5,7 @@
   a scrollbar to content displayed in a sf::View object.
 
   @author Jeremiah Kellogg
-  @version 1.0.0 01/02/20
+  @version 1.0.1 01/11/20
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -49,9 +49,10 @@ public:
     @param &window The sf::RenderWindow object the scrollbar is drawn to.
     @param offset Optional parameter to fix weird offset between mouse position and scroll slider (scroll element) position
       happening in the SelectMap instatiation of a scrollbar.  This should be investigated further.
-      ********************It might be tied to how mapdisplay containers are positioned?*********************
+    @param y_offset Optional parameter to fix wierd y axis offset that's likely tied to poor implementation of a view
+      (it works the way it should without offsets in the main content view displaying maps, but not in leftcolumn view).
   */
-  bool MouseOverScroll(sf::RenderWindow &window, float offset = 0);
+  bool MouseOverScroll(sf::RenderWindow &window, float x_offset = 0, float y_offset = 0);
 
   /**
     Returns an sf::Vector2f object containing x and y axis position coordinates of the scrollbar.
