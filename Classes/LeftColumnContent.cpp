@@ -7,7 +7,7 @@
       of plants user can select to edit or drop into a garden map.
 
     @author Jeremiah Kellogg
-    @version 2.0.0 01/02/20
+    @version 2.1.0 01/19/20
 */
 
 #include "LeftColumnContent.h"
@@ -38,6 +38,8 @@ LeftColumnContent::LeftColumnContent(sf::View &view)
   m_plantTxtRow.setFont(m_ubuntu);
   m_plantTxtRow.setFillColor(sf::Color::Black);
   m_plantTxtRow.setCharacterSize(15);
+
+  m_stopPlantSelection = false;
 
   GetSelectedPlant(); //Not calling this function in the constructor causes odd behavior that should probably be investigated.
 }
@@ -140,7 +142,7 @@ void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
   for(int i = 0; i < m_plantDisplayList.size(); i++)
   {
     m_plantContainer.setPosition(m_plantDisplayList[i]);
-    if(MouseOverPlantContainer(window))
+    if(MouseOverPlantContainer(window) && !m_scrollBar->GetScrolling())
     {
       if(m_plants[i].GetID() != m_currentPlant.GetID())
       {
@@ -151,7 +153,7 @@ void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
         m_plantContainer.setFillColor(sf::Color(86, 225, 58, 255));
       }
 
-      if(event.mouseButton.button == sf::Mouse::Left)
+      if(event.mouseButton.button == sf::Mouse::Left && !StopPlantSelection())
       {
         m_currentPlant.SetSelectedDatabase(false, m_currentPlant.GetID());
         m_plants[i].SetSelectedDatabase(true, m_plants[i].GetID());
@@ -196,6 +198,21 @@ void LeftColumnContent::Draw(sf::RenderWindow &window, sf::Event event)
 ScrollBar* LeftColumnContent::GetScrollBar()
 {
   return m_scrollBar;
+}
+
+/*Set the value for stopping a plant from being seleced.  Used to keep plants from accidentally
+  being when the cursor is over a m_plantContainer and the user stops scrolling.*/
+void LeftColumnContent::SetStopPlantSelect(bool stop)
+{
+  m_stopPlantSelection = stop;
+}
+
+/*Returns true or false to determine if a plant should be stopped from being selected.
+    Used to stop a plants from being selected when a user is hovering over a m_plantContainer
+    while scrolling and releases the mouse button.*/
+bool LeftColumnContent::StopPlantSelection()
+{
+  return m_stopPlantSelection;
 }
 
 /**********Private Functions**********/

@@ -6,7 +6,7 @@
   users can select maps they've already created to edit.
 
   @author Jeremiah Kellogg
-  @version 2.0.0 01/02/20
+  @version 2.1.0 01/19/2020
 */
 
 #include "SelectMap.h"
@@ -27,6 +27,8 @@ SelectMap::SelectMap(sf::View &view)
   m_mapTxtLength.setFillColor(sf::Color::Black);
   m_mapTxtWidth.setFont(m_ubuntu);
   m_mapTxtWidth.setFillColor(sf::Color::Black);
+
+  SetStopMapView(false);
 }
 
 //Destructor
@@ -106,10 +108,10 @@ void SelectMap::DrawMapMenu(sf::RenderWindow &window, sf::Event &event, MapDispl
   //Loop through map list and draw available maps to the window
   for(int i = 0; i < m_mapContainerList.size(); i++)
   {
-    if(MouseOverMapContainer(window))
+    if(MouseOverMapContainer(window) && !m_scrollBar->GetScrolling())
     {
       m_mapSelectContainer.setFillColor(sf::Color(238, 244, 177, 255));
-      if(event.mouseButton.button == sf::Mouse::Left)
+      if(event.mouseButton.button == sf::Mouse::Left && !StopMapView())
       {
         display.SetDisplay(true);
         display.SetMap(m_mapList[i], view);
@@ -174,7 +176,23 @@ void SelectMap::AddScrollBar()
   m_scrollBar->SetCenterScreen(m_contentView.getSize().x / 2.f, (m_contentView.getSize().y / 2.f));
 }
 
+//Returns a pointer to a ScrollBar object used for calling ScrollBar class functions.
 ScrollBar* SelectMap::GetScrollBar()
 {
   return m_scrollBar;
+}
+
+/*Set the value for stopping a map view from displaying.  Used to keep a map view from accidentally
+  opened when the cursor is over a m_mapSelectContainer and the user stops scrolling.*/
+void SelectMap::SetStopMapView(bool stop)
+{
+  m_stopMapView = stop;
+}
+
+/*Returns true or false to determine if a MapView should be stopped from opening.
+  Used to stop a mapview from displaying when a user is hovering over a m_mapSelectContainer
+  while scrolling and released the mouse button.*/
+bool SelectMap::StopMapView()
+{
+  return m_stopMapView;
 }

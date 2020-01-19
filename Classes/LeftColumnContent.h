@@ -7,7 +7,7 @@
       plants user can select to edit or drop into a garden map.
 
     @author Jeremiah Kellogg
-    @version 2.0.0 01/02/20
+    @version 2.1.0 01/19/20
 */
 
 #pragma once
@@ -79,6 +79,21 @@ public:
   */
   ScrollBar* GetScrollBar();
 
+  /**
+    Set the value for stopping a plant from being seleced.  Used to keep plants from accidentally
+      being when the cursor is over a m_plantContainer and the user stops scrolling.
+
+  	@param stop Boolean value to stop a plant from accidentally being selected.
+  */
+  void SetStopPlantSelect(bool stop);
+
+  /**
+    Returns true or false to determine if a plant should be stopped from being selected.
+      Used to stop a plants from being selected when a user is hovering over a m_plantContainer
+      while scrolling and releases the mouse button.
+  */
+  bool StopPlantSelection();
+
 private:
   sf::RectangleShape m_displayArea;  //Stores x and y size of the content being displayed.
   sf::RectangleShape m_plantContainer;  //Object for a container storing plant data.
@@ -96,6 +111,7 @@ private:
   sf::Font m_ubuntu;  //Object storing font info for the ubuntu font.
   ScrollBar *m_scrollBar; //Object for scrollbar functionality.
   ScrollBar ptrAddress; //Object used for giving an address to the m_scrollBar pointer.
+  bool m_stopPlantSelection;
 
   //Pointers to MySQL Connector/C++ objects needed for communicating with the MySQL database.
   sql::Driver *driver;

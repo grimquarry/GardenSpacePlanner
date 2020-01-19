@@ -6,7 +6,7 @@
   users can select maps they've already created to edit.
 
   @author Jeremiah Kellogg
-  @version 2.0.0 01/01/120
+  @version 2.1.0 01/19/2020
 */
 
 #pragma once
@@ -73,9 +73,24 @@ public:
   void AddScrollBar();
 
   /**
-    Returns a ScrollBar object used for calling ScrollBar class functions.
+    Returns a pointer to a ScrollBar object used for calling ScrollBar class functions.
   */
   ScrollBar* GetScrollBar();
+
+  /**
+    Set the value for stopping a map view from displaying.  Used to keep a map view from accidentally
+      opened when the cursor is over a m_mapSelectContainer and the user stops scrolling.
+
+  	@param stop Boolean value to stop a map view from accidentally being displayed.
+  */
+  void SetStopMapView(bool stop);
+
+  /**
+    Returns true or false to determine if a MapView should be stopped from opening.
+      Used to stop a mapview from displaying when a user is hovering over a m_mapSelectContainer
+      while scrolling and released the mouse button.
+  */
+  bool StopMapView();
 
 private:
   std::vector<Map> m_mapList;  //A list of maps available in the MySQL database.
@@ -90,6 +105,7 @@ private:
   sf::RectangleShape m_displayArea; //X and y size of the content being displayed.
   sf::View m_contentView; //Object for storing what view SelectMap objects should appear in.  Used for scrolling functionality.
   sf::RectangleShape m_mapSelectContainer;//Object for map list display container.
+  bool m_stopMapView;
 /**********Should the Screen to view ratio go into ScrollBar class?????**************/
   float m_screenToViewRatio;  //Variable determining the ratio between the view size and the content size.
 };
