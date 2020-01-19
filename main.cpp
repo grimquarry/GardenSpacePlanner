@@ -240,7 +240,7 @@ int main()
 							SelectMapScreen.GetScrollBar()->SetScrolling(true);
 							SelectMapScreen.GetScrollBar()->SetFirstClick(true);
 						}
-						if(displayMap.GetDisplay())
+						else if(displayMap.GetDisplay())
 						{
 							if(displayMap.MouseInBounds(mainWindow, mainContent, mapNavBar))
 							{
@@ -271,10 +271,23 @@ int main()
 					}
 					break;
 				case sf::Event::MouseButtonReleased:
+					//if/else needed to stop MapView from displaying when the cursor is hovering over a map selection
+					//and the user stops scrolling.  Kind of brute force and probably not the best approach, but it works.
+					if(SelectMapScreen.GetScrollBar()->GetScrolling()  || leftColumnDisplay.GetScrollBar()->GetScrolling())
+					{
+						SelectMapScreen.SetStopMapView(true);
+						leftColumnDisplay.SetStopPlantSelect(true);
+					}
+					else
+					{
+						SelectMapScreen.SetStopMapView(false);
+						leftColumnDisplay.SetStopPlantSelect(false);
+					}
 					leftColumnDisplay.GetScrollBar()->SetScrolling(false);
 					leftColumnDisplay.GetScrollBar()->SetElementColor(sf::Color(175, 175, 175, 255));
 					SelectMapScreen.GetScrollBar()->SetScrolling(false);
 					SelectMapScreen.GetScrollBar()->SetElementColor(sf::Color(175, 175, 175, 255));
+
 					if(AddPlantScreen.GetActiveStatus())
 					{
 						AddPlantScreen.SubmitData(mainWindow);
@@ -371,6 +384,7 @@ int main()
 		leftColumnDisplay.Draw(mainWindow, event);
 
 		mainWindow.display();
+
 		//End render all objects to window.
 	}//End main program loop
 }
