@@ -5,7 +5,7 @@
   a scrollbar to content displayed in a sf::View object.
 
   @author Jeremiah Kellogg
-  @version 1.0.1 01/11/20
+  @version 1.0.2 02/1/2020
 */
 #include "ScrollBar.h"
 
@@ -32,10 +32,8 @@ void ScrollBar::SetFirstClick(bool click)
 //Implements the logic behind scroll functionality
 void ScrollBar::Scroll(sf::RenderWindow &window)
 {
-  //std::cout << "Scroll was called" << std::endl;
   sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.  *****Should this be it's own function?  It's used in other spots, too*****
   sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion);  //Translates mouse position in window to mouse position in the view. *****Should this be it's own function?  It's used in other spots, too*****
-
   m_mouseYNew = mouseViewPosition.y;
 
   //Establish difference between scroll bar slider position and where the user clicked in the scroll bar slider.
@@ -66,6 +64,19 @@ void ScrollBar::Scroll(sf::RenderWindow &window)
     m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, (m_scrollBarView.getSize().y / 2.f));
   }
 
+  //What to do when user clicks inside scroll container above the scroll slider (m_scrollElement).
+  if(m_mouseYNew < m_scrollElement.getPosition().y && m_scrollElement.getPosition().y > m_scrollMinimum.y)
+  {
+    m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y  + m_offset - 20.f);
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+  }
+  //What to do when user clicks inside scroll container blow the scroll slider (m_scrollElement).
+  else if(m_mouseYNew > m_scrollElement.getPosition().y + m_scrollElement.getSize().y && m_scrollElement.getPosition().y < m_scrollMaximum.y - m_scrollElement.getSize().y)
+  {
+    m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y  + m_offset - 20.f);
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+  }
+
   m_firstClick = false;//first click is no longer true after the program loop runs once after scrollbar is clicked.
 }
 
@@ -76,9 +87,6 @@ bool ScrollBar::MouseOverScroll(sf::RenderWindow &window, float x_offset, float 
   window.setView(m_scrollBarView);
   sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion); //Translates mouse position in window to mouse position in the view.  *****Should this be it's own function?  It's used in other spots, too*****
 
-  //std::cout << "Scrollbar view size for x is: "<< m_scrollBarView.getSize().x << std::endl;
-  //std::cout << "Scrollbar view size for y is: "<< m_scrollBarView.getSize().y << std::endl;
-
   //Use offset paramters to adjust mouse to view coordinates for Views that may not have been implemented properly.
   //This was done to account for the weird offset in the leftColumnView sf::View object that I may have implemented in a bad way (likely trying to account for window to view offsets).
   float adjustXPosition = m_scrollBarView.getSize().x * x_offset;
@@ -86,14 +94,12 @@ bool ScrollBar::MouseOverScroll(sf::RenderWindow &window, float x_offset, float 
   float adjustYPosition = m_scrollBarView.getSize().y * y_offset;
   mouseViewPosition.y -=adjustYPosition;
 
-  //std::cout << "mouseViewPostion X is: " << mouseViewPosition.x << std::endl;
-  //std::cout << "mouseViewPostion Y is: " << mouseViewPosition.y << std::endl;
   float scrollPosX = m_scrollElement.getPosition().x;
   float scrollXPosWidth = scrollPosX + m_scrollElement.getGlobalBounds().width;
-  //std::cout << "Scroll element X is: " << scrollPosX << std::endl;
-  //std::cout << "Scroll element Y is: " << m_scrollElement.getPosition().y << std::endl;
+  float scrollPosY = m_scrollContainer.getPosition().y;
+  float scrollYPosHeight = scrollPosY + m_scrollBarView.getSize().y;
 
-  if(mouseViewPosition.x < scrollXPosWidth && mouseViewPosition.x > scrollPosX && mouseViewPosition.y < m_scrollElement.getPosition().y + m_scrollElement.getSize().y && mouseViewPosition.y > m_scrollContainer.getPosition().y)
+  if(mouseViewPosition.x < scrollXPosWidth && mouseViewPosition.x > scrollPosX && mouseViewPosition.y < scrollYPosHeight && mouseViewPosition.y > scrollPosY)
   {
     return true;
   }
