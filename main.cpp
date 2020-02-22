@@ -378,7 +378,7 @@ int main()
 		leftColumnView.setCenter(leftColumnDisplay.GetScrollBar()->GetScrollPosition(leftColumn));
 		if(leftColumnDisplay.GetScrollBar()->GetScrolling())
 		{
-			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow);
+			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow, event);
 		}
 
 		leftColumnDisplay.Draw(mainWindow, event);
