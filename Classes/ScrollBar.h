@@ -41,7 +41,7 @@ public:
 
     @param &window The sf::RenderWindow object the scrollbar should be drawn to.
   */
-  void Scroll(sf::RenderWindow &window);
+  void Scroll(sf::RenderWindow &window, sf::Event &event);
 
   /**
     Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
@@ -186,6 +186,9 @@ public:
   */
   void SetView(sf::View &view);
 
+  bool MouseOverSlider(sf::Vector2f mousePos);
+
+
 private:
   bool m_isScrolling;  //Member variable identifying if the user is scrolling or not.
   bool m_firstClick;  //Member variable identifying if a user is clicking on the scrollbar from a non scrolling state.
@@ -197,4 +200,5 @@ private:
   sf::RectangleShape m_centerScreen;//Object that determines where the view camera is positioned over the content display.
   sf::Vector2f m_scrollMaximum; //Object with x & y coordinates for maximum scrollbar position.
   sf::Vector2f m_scrollMinimum; //Object with x & coordinates for minimum scollbar position.
+  int m_scrollIndex;
 };
