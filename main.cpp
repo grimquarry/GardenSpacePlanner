@@ -6,7 +6,7 @@
 			It allows users to add new plants and edit existing plants as needed.
 
     @author Jeremiah Kellogg
-    @version 2.2.1 01/02/20
+    @version 2.2.2 02/23/2020
 */
 
 //#include <stdlib.h>
