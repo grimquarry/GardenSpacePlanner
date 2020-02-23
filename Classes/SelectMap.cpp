@@ -6,7 +6,7 @@
   users can select maps they've already created to edit.
 
   @author Jeremiah Kellogg
-  @version 2.1.0 01/19/2020
+  @version 2.1.1 01/19/2020
 */
 
 #include "SelectMap.h"
