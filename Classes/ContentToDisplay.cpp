@@ -8,7 +8,7 @@
     object parameters.
 
   @author Jeremiah Kellogg
-  @version 2.0.1 02/22/2020
+  @version 2.0.1 02/23/2020
 */
 
 #include "ContentToDisplay.h"
@@ -37,7 +37,7 @@ void ContentToDisplay::DisplayContent(sf::RenderWindow &window, Content &welcome
   {
     if(selectmap.GetScrollBar()->GetScrolling())
 		{
-			selectmap.GetScrollBar()->Scroll(window, event);
+			selectmap.GetScrollBar()->Scroll(window);
 		}
 
     selectmap.DrawMapMenu(window, event, mapDisplay, view);
