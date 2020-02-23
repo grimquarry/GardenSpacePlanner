@@ -6,7 +6,7 @@
       can then be added to these areas.
 
     @author Jeremiah Kellogg
-    @version 1.0 12/08/19
+    @version 1.0.1 02/23/2020
 */
 
 #pragma once
@@ -47,6 +47,13 @@ public:
     Returns the sf::Vector2f object with the x and y position of the container.
   */
   sf::Vector2f GetPosition();
+
+  /**
+    Returns true or false based on whether the mouse is over the container or not.
+
+    @param &window The referenced Window object where mouse position will be called
+  */
+  bool MouseOverContainer(sf::RenderWindow &window);
 
 private:
   sf::RectangleShape m_container; //Object holding data for the ContentContainer.

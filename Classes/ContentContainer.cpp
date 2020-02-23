@@ -6,7 +6,7 @@
       can then be added to these areas.
 
     @author Jeremiah Kellogg
-    @version 1.0 12/08/19
+    @version 1.0.1 02/23/2020
 */
 
 #include "ContentContainer.h"
@@ -40,4 +40,24 @@ sf::Vector2f ContentContainer::GetSize()
 sf::Vector2f ContentContainer::GetPosition()
 {
   return m_container.getPosition();
+}
+
+// Returns true or false based on whether the mouse is over the container or not.
+bool ContentContainer::MouseOverContainer(sf::RenderWindow &window)
+{
+  sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window);
+
+  int xMinBoundry = m_container.getPosition().x;
+  int xMaxBoundry = m_container.getPosition().x + m_container.getSize().x;
+  int yMinBoundry = m_container.getPosition().y;
+  int yMaxBoundry = m_container.getPosition().y + m_container.getSize().y;
+
+  if(mouseWindowPostion.x < xMaxBoundry && mouseWindowPostion.x > xMinBoundry && mouseWindowPostion.y < yMaxBoundry && mouseWindowPostion.y > yMinBoundry)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
