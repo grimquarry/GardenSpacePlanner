@@ -270,6 +270,18 @@ int main()
 						EditPlantScreen.EnterText(event);
 					}
 					break;
+				case sf::Event::MouseWheelMoved:
+					SelectMapScreen.SetStopMapView(true);
+					leftColumnDisplay.SetStopPlantSelect(true);
+					if(leftColumn.MouseOverContainer(mainWindow))
+					{
+						leftColumnDisplay.GetScrollBar()->MouseWheelScroll(mainWindow, event);
+					}
+					else if(mainContent.MouseOverContainer(mainWindow) && SelectMapScreen.GetActiveStatus())
+					{
+						SelectMapScreen.GetScrollBar()->MouseWheelScroll(mainWindow, event);
+					}
+					break;
 				case sf::Event::MouseButtonReleased:
 					//if/else needed to stop MapView from displaying when the cursor is hovering over a map selection
 					//and the user stops scrolling.  Kind of brute force and probably not the best approach, but it works.
@@ -378,7 +390,7 @@ int main()
 		leftColumnView.setCenter(leftColumnDisplay.GetScrollBar()->GetScrollPosition(leftColumn));
 		if(leftColumnDisplay.GetScrollBar()->GetScrolling())
 		{
-			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow, event);
+			leftColumnDisplay.GetScrollBar()->Scroll(mainWindow);
 		}
 
 		leftColumnDisplay.Draw(mainWindow, event);
