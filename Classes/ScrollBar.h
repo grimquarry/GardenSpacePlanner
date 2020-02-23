@@ -5,7 +5,7 @@
   a scrollbar to content displayed in a sf::View object.
 
   @author Jeremiah Kellogg
-  @version 1.0.1 01/11/20
+  @version 1.0.2 02/23/2020
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -41,7 +41,7 @@ public:
 
     @param &window The sf::RenderWindow object the scrollbar should be drawn to.
   */
-  void Scroll(sf::RenderWindow &window, sf::Event &event);
+  void Scroll(sf::RenderWindow &window);
 
   /**
     Returns true or false depending on whether the mouse is positioned over the scrollbar or not.
@@ -186,8 +186,18 @@ public:
   */
   void SetView(sf::View &view);
 
+  /**
+    Returns true or false when mouse is over the m_scrollElement or not.
+  */
   bool MouseOverSlider(sf::Vector2f mousePos);
 
+  /**
+    Implements the logic behind scroll functionality when using mouse wheel
+
+    @param &window The sf::RenderWindow object where scrolling happens.
+    @param &event Reference mouse events to check for mouseWheel.delta
+  */
+  void MouseWheelScroll(sf::RenderWindow & window, sf::Event &event);
 
 private:
   bool m_isScrolling;  //Member variable identifying if the user is scrolling or not.

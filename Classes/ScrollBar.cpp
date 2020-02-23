@@ -5,7 +5,7 @@
   a scrollbar to content displayed in a sf::View object.
 
   @author Jeremiah Kellogg
-  @version 1.0.3 02/1/2020
+  @version 1.0.4 02/23/2020
 */
 #include "ScrollBar.h"
 
@@ -30,7 +30,7 @@ void ScrollBar::SetFirstClick(bool click)
 }
 
 //Implements the logic behind scroll functionality
-void ScrollBar::Scroll(sf::RenderWindow &window, sf::Event &event)
+void ScrollBar::Scroll(sf::RenderWindow &window)
 {
   sf::Vector2i mouseWindowPostion = sf::Mouse::getPosition(window); //Grabs position of mouse in the window.  *****Should this be it's own function?  It's used in other spots, too*****
   sf::Vector2f mouseViewPosition = window.mapPixelToCoords(mouseWindowPostion);  //Translates mouse position in window to mouse position in the view. *****Should this be it's own function?  It's used in other spots, too*****
@@ -63,24 +63,12 @@ void ScrollBar::Scroll(sf::RenderWindow &window, sf::Event &event)
         m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_mouseYNew - m_offset);
         m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2, (m_scrollBarView.getSize().y / 2) + m_scrollElement.getPosition().y * viewScrollSpeed);
       }
-      // else if(m_mouseYNew < m_scrollElement.getPosition().y && m_mouseYNew > m_scrollMinimum.y && m_mouseYNew < m_scrollMinimum.y + m_scrollElement.getSize().y)
-      // {
-      //   m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollMinimum.y);
-      //   m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2, m_scrollBarView.getSize().y / 2);
-      // }
     }
     else // What to do when the m_mouseYNew position is within bounds of the m_scrollElement/slider
     {
       m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_mouseYNew - m_offset);
       m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
     }
-    // std::cout << "m_mouseYNew is: " << m_mouseYNew << std::endl;
-    // std::cout << "m_scrollElement Y is: " << m_scrollElement.getPosition().y << std::endl;
-    // std::cout << "m_offset is: " << m_offset << std::endl;
-    // std::cout << "mouseWindowPostion.y is: " << mouseWindowPostion.y << std::endl;
-    // std::cout << "view size is: " << m_scrollBarView.getSize().y << std::endl;
-    // std::cout << "Container size is: " << m_scrollContainer.getSize().y << std::endl;
-    // std::cout << "Scroll Speed is: " << viewScrollSpeed << std::endl;
   }
   m_firstClick = false;//first click is no longer true after the program loop runs once after scrollbar is clicked.
 }
@@ -217,6 +205,7 @@ void ScrollBar::SetView(sf::View &view)
   m_scrollBarView = view;
 }
 
+// Returns true or false when mouse is over the m_scrollElement or not.
 bool ScrollBar::MouseOverSlider(sf::Vector2f mousePos)
 {
   if(mousePos.x <= m_scrollElement.getPosition().x + m_scrollElement.getSize().x && mousePos.x >= m_scrollElement.getPosition().x && mousePos.y <= m_scrollElement.getPosition().y + m_scrollElement.getSize().y && mousePos.y >= m_scrollElement.getPosition().y)
@@ -226,5 +215,45 @@ bool ScrollBar::MouseOverSlider(sf::Vector2f mousePos)
   else;
   {
     return false;
+  }
+}
+
+// Implements the logic behind scroll functionality when using mouse wheel
+void ScrollBar::MouseWheelScroll(sf::RenderWindow & window, sf::Event &event)
+{
+  //Algorithm for determining how fast the view should scroll in relation to scroll bar slider movement.
+  float viewScrollSpeed = (m_scrollContainer.getSize().y - m_scrollBarView.getSize().y) / (m_scrollContainer.getSize().y - m_scrollElement.getSize().y);
+  if(m_scrollElement.getPosition().y <= m_scrollMaximum.y - m_scrollElement.getSize().y - 30 && m_scrollElement.getPosition().y >= m_scrollMinimum.y + 30)
+  {
+    if(event.mouseWheel.delta < 0)
+    {
+      m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y - (30 * viewScrollSpeed));
+      m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+    }
+    else if (event.mouseWheel.delta > 0)
+    {
+      m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y + (30 * viewScrollSpeed));
+      m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+    }
+  }
+  else if(m_scrollElement.getPosition().y <= m_scrollMinimum.y + 30 && event.mouseWheel.delta == -1)
+  {
+    m_scrollElement.setPosition(m_scrollMinimum);
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2);
+  }
+  else if(m_scrollElement.getPosition().y <= m_scrollMinimum.y + 30 && event.mouseWheel.delta == 1)
+  {
+    m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y + (30 * viewScrollSpeed));
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+  }
+  else if(m_scrollElement.getPosition().y >= m_scrollMaximum.y - m_scrollElement.getSize().y - 30  && event.mouseWheel.delta == -1)
+  {
+    m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollElement.getPosition().y - (30 * viewScrollSpeed));
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
+  }
+  else if(m_scrollElement.getPosition().y <= m_scrollMaximum.y - m_scrollElement.getSize().y - 30  && event.mouseWheel.delta == 1)
+  {
+    m_scrollElement.setPosition(m_scrollElement.getPosition().x, m_scrollMaximum.y - m_scrollElement.getSize().y);
+    m_centerScreen.setPosition(m_scrollBarView.getSize().x / 2.f, m_scrollBarView.getSize().y / 2 + m_scrollElement.getPosition().y * viewScrollSpeed);
   }
 }
